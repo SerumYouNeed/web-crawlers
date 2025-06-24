@@ -13,6 +13,9 @@ output/
 # Env
 **/.env
 .venv/
+venv/
+**/venv/
+**/.venv/
 .envrc
 
 # VSCode / IDEs
