@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.log
+*.sqlite
+*.db
+
+# CSV / data
+*.csv
+data/
+output/
+
+# Env
+**/.env
+.venv/
+.envrc
+
+# VSCode / IDEs
+.vscode/
+.idea/
+*.iml
