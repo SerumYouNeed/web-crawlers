@@ -9,6 +9,7 @@ __pycache__/
 *.csv
 data/
 output/
+logs/*.log
 
 # Env
 **/.env
@@ -22,3 +23,6 @@ venv/
 .vscode/
 .idea/
 *.iml
+
+# dev_scripts
+**/dev_scripts/

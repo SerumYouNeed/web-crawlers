@@ -1,56 +1,91 @@
 import pandas as pd
 from logger import get_logger
+from bs4 import BeautifulSoup
+import csv
+import requests
+import psycopg2
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+URL = "https://www.engvid.com/english-resource/50-common-proverbs-sayings/"
+OUTPUT_CSV = "proverbs.csv"
 
 logger = get_logger(__name__)
 
-def extract(file_path):
+def extract(url):
     """
-    Extract csv file from a given path.
+    Extract raw data in from of a list from given url.
 
     Args: 
-        file_path (string): location of a file
+        url (string): Location of a page to scrape.
 
     Returns:
-        raw (DataFrame): pandas DataFrame
+        proverbs (List of Dicts): List of scraped dicts [{proverb:proverb, meaning:meaning},]
     """
     try:
-        logger.info(f"Reading file: {file_path}")
-        raw = pd.read_csv(file_path)
-        return raw
-    except FileNotFoundError:
-        logger.error(f"File not found: {file_path}")
-        raise
-    except Exception as e:
-        logger.error(f"Error reading file: {e}")
-        raise
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        logger.error(f"Request failed: {e}")
+        return []
 
-def transform(df):
+    soup = BeautifulSoup(response.text, "lxml")
+
+    proverbs = []
+    proverb = soup.find_all('td', class_="res_proverb_proverb")
+    meaning = soup.find_all('td', class_="res_proverb_def")
+
+    for (i, j) in zip(proverb, meaning):
+        proverbs.append({"proverb":i.text.strip(), "meaning":j.text.strip()})
+
+    return proverbs
+
+def transform(raw, file_path):
     """
-    Transfor data to keep only rows where revenue < 1500
+    Transform data to keep nice formatting ready for save to CSV file.
 
     Args:
-        df (DataFrame): data frame used in transformation
-
-    Returns:
-        df (DataFrame): transformed data where revenue is under 1500
+        raw (List of Dicts): Data used in transformation.
     """
-    logger.info("Filtering rows with revenue < 1500")
-    df = df.loc[df["revenue"] < 1500, :]
-    return df
-
-def load(df, file_path):
-    """
-    Saves data to csv file under given path. Rows without indexes.
-
-    Args:
-        df (DataFrame): data given to save
-        file_path (string): location of saved file
-
-    Returns:
-        file_path (string): returns path for tests
-    """
+    logger.info("Punctuation checking.")
+    df = pd.DataFrame(raw)
     logger.info(f"Saving result to {file_path}")
     df.to_csv(file_path, index=False)
+
+def load(file_path):
+    """
+    Loads data from given path to postgres. 
+
+    Args:
+        file_path (string): Location of saved file.
+    """
+    logger.info(f"Loading result to to postgres from {file_path}")
+    
+    try:
+        with psycopg2.connect(
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            host=os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT")
+        ) as conn:
+            with conn.cursor() as cur:
+                with open(file_path, newline='', encoding='utf-8') as file:
+                    reader = csv.DictReader(file)
+                    for row in reader:
+                        cur.execute("""
+                                    INSERT INTO proverbs (proverb, meaning)
+                                    VALUES (%s, %s)
+                                    ON CONFLICT (proverb) DO NOTHING
+                                    """,
+                                    (row["proverb"], row["meaning"])
+                        )
+        logger.info("Data loaded to database successfully.")
+
+    except Exception as e:
+        logger.error(f"Database load failed: {e}")
 
 def run():
     """
@@ -61,9 +96,12 @@ def run():
     """
     logger.info("Running simple_etl_pipeline...")
     try:
-        df = extract("resources/input/sales.csv")
-        df = transform(df)
-        load(df, "resources/output/low_revenue.csv")
+        raw_data = extract(URL)
+        if not raw_data:
+            logger.warning("No data to transform. ETL ended.")
+            return
+        transform(raw_data, OUTPUT_CSV)
+        load(OUTPUT_CSV)
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")    
 
