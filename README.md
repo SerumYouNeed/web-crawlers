@@ -1,21 +1,24 @@
 # Web Crawlers
 
-This repository contains a collection of Python-based web crawlers and data loaders used to gather and process data from public websites.
+This repository contains a collection of Python-based ETL pipelines used to gather, transform, and load data from public websites.
 
-Each subfolder is dedicated to a specific project, such as collecting structured content for games, datasets, or APIs. The crawled data can be exported to CSV files or directly loaded into databases like PostgreSQL.
+Each subfolder represents a self-contained project designed to collect structured content for games, datasets, or other applications. The crawled data can be exported to CSV files and/or loaded into databases like PostgreSQL.
+
 
 ## Projects
 
-- `wheel-of-fortune/` – crawlers and loaders used to collect proverbs, movie titles, and actor names for the Wheel of Fortune game.
+- `wheel-of-fortune/` – ETL pipeline for collecting English proverbs, movie titles, and actor names for the Wheel of Fortune game.
 - *More projects coming soon...*
+
 
 ## Structure
 
 Each project folder typically contains:
-- `crawler.py` – the spider/scraper script
-- `loader.py` – a script for loading scraped data into a database
-- `data/` – output folder for CSV files
-- `requirements.txt` – project-specific dependencies
+- `etl_pipeline.py` – a complete ETL script (scraping → transformation → loading to database)
+- `logger.py` – basic logging configuration
+- `etl.csv` – output/input CSV file
+- `.env` – environment variables (e.g., PostgreSQL credentials)
+
 
 ## Setup
 
@@ -25,6 +28,10 @@ Each project folder typically contains:
 4. Install dependencies:
    ```bash
    pip install -r requirements.txt
+   ```
+5. Run the ETL script:
+   ```bash
+   python etl_pipeline.py
    ```
 
 ## License
