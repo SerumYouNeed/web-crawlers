@@ -47,7 +47,7 @@ def transform(raw, file_path):
     Transform data to keep nice formatting ready for save to CSV file.
 
     Args:
-        raw (List of Dicts): Data used in transformation.
+        raw (List of Dicts): Data used in transformation process.
     """
     logger.info("Punctuation checking.")
     df = pd.DataFrame(raw)
