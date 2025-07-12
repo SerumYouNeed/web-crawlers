@@ -16,7 +16,7 @@ def get_logger(name: str, level: int = logging.INFO) -> logging.Logger:
     logger.setLevel(level)
 
     if not logger.handlers:
-        # Format odf logs
+        # Format of logs
         formatter = logging.Formatter(
             "%(asctime)s - %(levelname)s - %(name)s - %(message)s",
             "%Y-%m-%d %H:%M:%S"
