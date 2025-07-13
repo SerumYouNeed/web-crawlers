@@ -22,7 +22,7 @@ def extract(url):
         url (string): Location of a page to scrape.
 
     Returns:
-        proverbs (List of Dicts): List of scraped dicts [{proverb:proverb, meaning:meaning},]
+        proverbs (List of Dicts): List of scraped dicts in format [{proverb:proverb, meaning:meaning},]
     """
     try:
         response = requests.get(url)
