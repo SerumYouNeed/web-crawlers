@@ -22,9 +22,9 @@ Each project folder typically contains:
 
 ## Setup
 
-1. Clone the repository
-2. Navigate into a project folder
-3. (Optional) Create a virtual environment
+1. Clone the repository.
+2. Navigate into a project folder.
+3. (Optional) Create a virtual environment.
 4. Install dependencies:
    ```bash
    pip install -r requirements.txt
