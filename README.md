@@ -7,7 +7,7 @@ Each subfolder represents a self-contained project designed to collect structure
 
 ## Projects
 
-- `wheel-of-fortune/` – ETL pipeline for collecting English proverbs, movie titles, and actor names for the Wheel of Fortune game.
+- `wheel-of-fortune/` – ETL pipelines for collecting English proverbs, movie titles, and actor names for the Wheel of Fortune game.
 - *More projects coming soon...*
 
 
