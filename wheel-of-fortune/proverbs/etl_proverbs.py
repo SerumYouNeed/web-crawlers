@@ -16,7 +16,7 @@ logger = get_logger(__name__)
 
 def extract(url):
     """
-    Extract raw data in from of a list from given url.
+    Extract raw data in form of a list from given url.
 
     Args: 
         url (string): Location of a page to scrape.
