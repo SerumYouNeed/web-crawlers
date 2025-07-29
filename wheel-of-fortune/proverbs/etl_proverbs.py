@@ -94,7 +94,7 @@ def run():
     - transform
     - run
     """
-    logger.info("Running simple_etl_pipeline...")
+    logger.info("Running proverbs_etl_pipeline...")
     try:
         raw_data = extract(URL)
         if not raw_data:
